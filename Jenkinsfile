@@ -31,6 +31,7 @@ pipeline {
         stage('Deploy') {
         	agent any
             steps {
+            	sh 'docker stop jenkins-demo'
                 sh "docker run -d --rm --name jenkin-demo -p 8888:8080  jenkins-demo "
             }
         }        
