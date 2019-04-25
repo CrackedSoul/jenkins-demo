@@ -31,7 +31,7 @@ pipeline {
         stage('Deploy') {
         	agent any
             steps {
-                sh "docker run -d -rm --name jenkin-demo -p 8080:8080  jenkins-demo "
+                sh "docker run -d --rm --name jenkin-demo -p 8080:8080  jenkins-demo "
             }
         }        
     }
