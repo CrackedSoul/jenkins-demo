@@ -26,6 +26,12 @@ pipeline {
                 echo 'Build..'
                 sh 'mv  target/jenkins-demo-0.0.1-SNAPSHOT.jar  docker/jenkins-demo.jar'
                 script{
+                    try {
+            		 	sh 'docker stop jenkins-demo'
+			        }
+			        catch (exc) {
+			            echo '原容器不存在，直接删除镜像!'
+			        }
                 	try {
             		 	sh 'docker rmi  jenkins-demo'
 			        }
@@ -39,14 +45,6 @@ pipeline {
         stage('Deploy') {
         	agent any
             steps {
-                script{
-                	try {
-            		 	sh 'docker stop jenkins-demo'
-			        }
-			        catch (exc) {
-			            echo '原容器不存在，直接启动!'
-			        }
-                }
                 sh "docker run -d --rm --name jenkins-demo -p 8888:8080  jenkins-demo "
             }
         }        
