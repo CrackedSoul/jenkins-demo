@@ -44,7 +44,7 @@ pipeline {
             		 	sh 'docker stop jenkins-demo'
 			        }
 			        catch (exc) {
-			            echo '原镜像不存在，直接构建!'
+			            echo '原容器不存在，直接启动!'
 			        }
                 }
                 sh "docker run -d --rm --name jenkins-demo -p 8888:8080  jenkins-demo "
