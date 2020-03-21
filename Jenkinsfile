@@ -3,9 +3,9 @@ pipeline {
     stages {
         stage('Package') {
             agent {
-                    docker {
+                     docker {
                         image 'maven:3-alpine'
-                        args '-v /root/.m2:/root/.m2 -v /root/.m2/settings.xml:/usr/share/maven/conf/settings.xml'
+                        args '-v /usr/share/maven/ref:/root/.m2 -v /root/.sonar/cache:/root/.sonar/cache -v /home/docker/mavensettings/settings-bigdata.xml:/usr/share/maven/conf/settings.xml '
                     }
             }
             steps {
