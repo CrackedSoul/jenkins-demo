@@ -12,7 +12,7 @@ pipeline {
                 echo 'Package..'
                 sh 'mvn clean package -Dmaven.test.skip=true'
                 echo 'SonarQube Test..'
-             // sh 'mvn sonar:sonar'
+                sh 'mvn sonar:sonar'
             }
         }
         stage('Build') {
@@ -25,30 +25,41 @@ pipeline {
             	sh 'mv  Dockerfile docker/Dockerfile'
                 echo 'Build..'
                 sh 'mv  target/jenkins-demo-0.0.1-SNAPSHOT.jar  docker/jenkins-demo.jar'
+                script{
+                	try {
+            		 	sh 'docker rmi  jenkins-demo'
+			        }
+			        catch (exc) {
+			            echo '原镜像不存在，直接构建!'
+			        }
+                }
                 sh "docker build -t jenkins-demo docker/"
             }
         }   
         stage('Deploy') {
         	agent any
             steps {
-            	sh 'docker stop jenkins-demo'
+                script{
+                	try {
+            		 	sh 'docker stop jenkins-demo'
+			        }
+			        catch (exc) {
+			            echo '原镜像不存在，直接构建!'
+			        }
+                }
                 sh "docker run -d --rm --name jenkins-demo -p 8888:8080  jenkins-demo "
             }
         }        
     }
     post{
     	failure{
-	    	emailext (
-	    		body: """
-	    			${JOB_NAME}- Build #${BUILD_NUMBER} Result!</br>
-	    			BUILD_URL: <a href=\"${env.BUILD_URL}\">${env.BUILD_URL}</a></br>
-	    			JOB_URL:<a href=\"$JOB_URL\">$JOB_URL</br>
-	    			LogInfo: <a href=\"${env.BUILD_URL}console\">${env.BUILD_URL}console</br>
-	    		""", 
-	    		recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], 
-	    		subject: '${JOB_NAME}- Build #${BUILD_NUMBER} Construction Result',   
-	    		to: 'lixucheng@mastercom.cn'
-				)
-    	}
+            emailext (
+        	    attachLog: true,
+                body:'${SCRIPT, template="email.template"}',
+        	    recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
+        	    subject: '${JOB_NAME}- Build #${BUILD_NUMBER} Construction Result',
+        	    to: 'huangyulong@mastercom.cn'
+        	)
+        }
     }
 }
