@@ -13,6 +13,6 @@ public class DateUtilsTest {
 	public void getDateString() {
 		Calendar calendar=Calendar.getInstance();
 		calendar.set(2020,2,22);
-		assertEquals("2020-03-22",DateUtils.getDateString(calendar.getTime()));
+		assertEquals("2020/03/22",DateUtils.getDateString(calendar.getTime()));
 	}
 }
