@@ -10,7 +10,7 @@ pipeline {
             }
             steps {
                 echo 'Package..'
-                sh 'mvn clean package -Dmaven.test.skip=true'
+                sh 'mvn clean package'
                 echo 'SonarQube Test..'
                 sh 'mvn sonar:sonar'
             }
