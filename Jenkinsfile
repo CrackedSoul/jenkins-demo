@@ -1,3 +1,3 @@
 #!groovy
-library 'jenkins-commonlib@master'
-webCommonPipeline()
+library 'jenkins-share@conf-server'
+sharelib()
